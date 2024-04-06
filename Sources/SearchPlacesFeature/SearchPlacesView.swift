@@ -1,7 +1,5 @@
 import SwiftUI
 import MapKit
-import ComponentLibrary
-import Localization
 
 public struct SearchPlacesView: View {
     @StateObject var model = SearchPlacesModel()
@@ -16,16 +14,16 @@ public struct SearchPlacesView: View {
                 Button {
                     selectLocation(location)
                 } label : {
-                    VStack(alignment: .leading, spacing: Spacing.padding0) {
+                    VStack(alignment: .leading, spacing: 0) {
                         Text(location.title)
                         Text(location.subtitle)
                     }
                 }
             }
             .listStyle(.plain)
-            .padding(Spacing.padding2)
+            .padding(8)
         }
-        .searchable(text: $model.searchText, prompt: L10n.General.search)
+        .searchable(text: $model.searchText, prompt: "Search...")
         .onChange(of: model.searchText) { newValue in
             model.completer.queryFragment = newValue
         }
