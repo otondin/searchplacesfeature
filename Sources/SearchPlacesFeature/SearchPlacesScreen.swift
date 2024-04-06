@@ -21,6 +21,7 @@ public struct SearchPlacesFeature {
     
     @CasePathable
     public enum Action: Equatable, BindableAction {
+        case onAppear
         case searchQuery(String)
         case setSelectedLocation(MKLocalSearchCompletion?)
         case locationResultsSubscriber
@@ -33,6 +34,9 @@ public struct SearchPlacesFeature {
 
         Reduce { state, action in
             switch action {
+            case .onAppear:
+                return .send(.locationResultsSubscriber)
+                
             case let .searchQuery(query):
                 searchPlacesService.completer.queryFragment = query
                 return .none
@@ -82,6 +86,9 @@ public struct SearchPlacesScreen: View {
                 }
                 .listStyle(.plain)
                 .padding(8)
+            }
+            .onAppear {
+                store.send(.onAppear)
             }
             .searchable(text: $store.searchText.sending(\.searchQuery), prompt: "Search...")
             .navigationBarTitleDisplayMode(.inline)
