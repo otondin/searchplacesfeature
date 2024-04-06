@@ -6,7 +6,9 @@ public struct SearchPlacesView: View {
     
     public var delegate: SearchPlacesDelegate?
     
-    public init() {}
+    public init(delegate: SearchPlacesDelegate? = nil) {
+        self.delegate = delegate
+    }
         
     public var body: some View {
         NavigationStack {
