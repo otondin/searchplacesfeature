@@ -39,7 +39,7 @@ public struct SearchPlacesFeature {
                 
             case let .searchQuery(query):
                 searchPlacesService.completer.queryFragment = query
-                return .none
+                return .send(.locationResultsSubscriber)
                 
             case let .setSelectedLocation(location):
                 state.selectedLocation = location
