@@ -3,7 +3,7 @@ import MapKit
 
 public final class SearchPlacesService: NSObject {
     
-    public let publisher: ((SearchPlaceLocation) -> Void)? = nil
+    public var delegate: SearchPlacesDelegate?
     public var locationResults: [SearchPlaceLocation] = []
         
     public var completer: MKLocalSearchCompleter = {
@@ -24,7 +24,7 @@ public final class SearchPlacesService: NSObject {
     }
     
     public func publish(_ location: SearchPlaceLocation) {
-        self.publisher?(location)
+        delegate?.publisher(location)
     }
 }
 

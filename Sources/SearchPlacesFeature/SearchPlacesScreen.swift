@@ -30,6 +30,11 @@ public struct SearchPlacesFeature {
     
     public var body: some ReducerOf<Self> {
         BindingReducer()
+            .onChange(of: \.searchText) { oldValue, newValue in
+                Reduce { state, action in
+                    return .send(.searchQuery(newValue))
+                }
+            }
 
         Reduce { state, action in
             switch action {
@@ -93,7 +98,7 @@ public struct SearchPlacesScreen: View {
             .onAppear {
                 store.send(.onAppear)
             }
-            .searchable(text: $store.searchText.sending(\.searchQuery), prompt: "Search...")
+            .searchable(text: $store.searchText, prompt: "Search...")
             .navigationBarTitleDisplayMode(.inline)
         }
     }
