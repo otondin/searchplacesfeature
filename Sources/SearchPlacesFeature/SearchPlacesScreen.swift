@@ -1,6 +1,5 @@
 import SwiftUI
 import ComposableArchitecture
-import MapKit
 
 @Reducer
 public struct SearchPlacesFeature {
@@ -15,17 +14,17 @@ public struct SearchPlacesFeature {
         public init() {}
         
         var searchText = ""
-        var locationResults: [MKLocalSearchCompletion] = []
-        var selectedLocation: MKLocalSearchCompletion?
+        var locationResults: [SearchPlaceLocation] = []
+        var selectedLocation: SearchPlaceLocation?
     }
     
     @CasePathable
     public enum Action: Equatable, BindableAction {
         case onAppear
         case searchQuery(String)
-        case setSelectedLocation(MKLocalSearchCompletion?)
+        case setSelectedLocation(SearchPlaceLocation?)
         case locationResultsSubscriber
-        case locationResultsPublisher([MKLocalSearchCompletion])
+        case locationResultsPublisher([SearchPlaceLocation])
         case binding(BindingAction<State>)
     }
     
@@ -42,7 +41,11 @@ public struct SearchPlacesFeature {
                 return .send(.locationResultsSubscriber)
                 
             case let .setSelectedLocation(location):
+                guard let location
+                else { return .none }
+                
                 state.selectedLocation = location
+                searchPlacesService.publish(location)
                 return .none
                 
             case .locationResultsSubscriber:

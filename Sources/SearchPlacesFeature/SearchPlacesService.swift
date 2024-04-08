@@ -1,10 +1,10 @@
 import Dependencies
 import MapKit
 
-public class SearchPlacesService: NSObject {
+public final class SearchPlacesService: NSObject {
     
-    
-    public var locationResults: [MKLocalSearchCompletion] = []
+    public let publisher: ((SearchPlaceLocation) -> Void)? = nil
+    public var locationResults: [SearchPlaceLocation] = []
         
     public var completer: MKLocalSearchCompleter = {
         var completer = MKLocalSearchCompleter()
@@ -17,10 +17,14 @@ public class SearchPlacesService: NSObject {
         completer.delegate = self
     }
     
-    public func locationResultsStream() -> AsyncStream<[MKLocalSearchCompletion]> {
+    public func locationResultsStream() -> AsyncStream<[SearchPlaceLocation]> {
         return AsyncStream { continuation in
-            continuation.yield(locationResults) // TODO: create a model to avoid importing MapKit on faeture side
+            continuation.yield(locationResults)
         }
+    }
+    
+    public func publish(_ location: SearchPlaceLocation) {
+        self.publisher?(location)
     }
 }
 
@@ -28,7 +32,7 @@ public class SearchPlacesService: NSObject {
 extension SearchPlacesService: MKLocalSearchCompleterDelegate {
     
     public func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        locationResults = completer.results
+        locationResults = completer.results.map { .init(title: $0.title, subtitle: $0.subtitle) }
     }
     
     public func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: any Error) {
